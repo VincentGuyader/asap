@@ -1,0 +1,74 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+# asap
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of asap is to help you render async
+
+## Installation
+
+
+And the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("VincentGuyader/asap")
+```
+
+## Example 
+
+```
+library(shiny)
+library(promises)
+library(future)
+library(asap)
+plan(multisession)
+
+
+ui <- fluidPage(
+  column(6, plotOutput("one")),
+  column(6, plotOutput("two")),
+  column(6, plotOutput("three")),
+  column(6, plotOutput("four"))
+)
+
+server <- function(input, output, session) {
+  
+  plotiris <- reactiveVal()
+  plotiris(NULL)
+  update_asap(what = {
+  Sys.sleep(5);
+  iris},to = plotiris)
+  
+  output$one <- renderPlot({
+    req(plotiris())
+    plot(plotiris())
+  })
+  
+  output$two <- renderPlot({
+    plot(airquality)
+  })
+  output$three <- renderPlot({
+    plot(mtcars)
+  })
+  output$four <- renderPlot({
+    plot(cars)
+  })
+}
+
+shinyApp(ui, server)
+```
