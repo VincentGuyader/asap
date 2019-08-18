@@ -1,6 +1,6 @@
 #' update asap
 #'
-#' @param what what to do (an R expression)
+#' @param what what to do (an R function)
 #' @param to where to update ( shoul be a reactiveVal )
 #'
 #' @return
@@ -9,11 +9,12 @@
 #' @importFrom shiny reactiveVal
 #' @import future
 #' @import promises
+#' @importFrom purrr as_mapper
 update_asap <- function(what, to = reactiveVal()){
-  
+  # browser()
   future({
     # Sys.sleep(5)
-    what
+    purrr::as_mapper(what)()
   }) %...>%
     to() %...!%
     (function(e){

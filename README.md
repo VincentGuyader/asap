@@ -38,9 +38,10 @@ remotes::install_github("VincentGuyader/asap")
       
       plotiris <- reactiveVal()
       plotiris(NULL)
-      update_asap(what = {
-      Sys.sleep(5);
-      iris},to = plotiris)
+      
+      update_asap(what = ~{
+        Sys.sleep(8);
+        iris},to = plotiris)
       
       output$one <- renderPlot({
         req(plotiris())
